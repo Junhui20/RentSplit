@@ -1,6 +1,6 @@
 # RentSplit Malaysia 🏠💰
 
-A Flutter application for **fair electricity bill distribution** among Malaysian property owners and tenants, with **TNB 2024 compliance**.
+A Flutter application for **fair electricity bill distribution** among Malaysian property owners and tenants, with **TNB 2025 compliance**.
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.32.0-blue.svg)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-3.5.0-blue.svg)](https://dart.dev/)
@@ -9,7 +9,7 @@ A Flutter application for **fair electricity bill distribution** among Malaysian
 ## 🎯 What This App Solves
 
 **Problem**: Splitting electricity bills fairly among tenants in Malaysia is complex due to:
-- TNB's new 2024 billing structure with multiple charges and taxes
+- TNB's new 2025 billing structure with multiple charges and taxes
 - Individual air conditioning usage differences
 - Common area electricity sharing
 - Manual calculations prone to errors and disputes
@@ -18,7 +18,7 @@ A Flutter application for **fair electricity bill distribution** among Malaysian
 
 ## ⚡ Core Features
 
-### TNB 2024 Electricity Calculation
+### TNB 2025 Electricity Calculation
 - **Complete TNB Compliance**: Energy charge, capacity charge, network charge, retail charge
 - **Tax Calculations**: KWTBB (1.6%), SST (8%), Energy Efficiency Incentive
 - **Individual AC Tracking**: Separate meters for each tenant's air conditioning usage
@@ -133,19 +133,6 @@ lib/
 └── providers/                # State management
 ```
 
-## 📚 Documentation
-
-### For Users
-- [**Core Features**](docs/CORE_FEATURES.md) - Main functionality overview
-- [**TNB Electricity Guide**](docs/TNB_ELECTRICITY_GUIDE.md) - Understanding TNB 2024 system
-- [**Calculation Methods**](docs/CALCULATION_METHODS.md) - Simple vs Layered approaches
-- [**User Cases**](docs/USER_CASES.md) - Real-world scenarios
-
-### For Developers
-- [**Setup Guide**](docs/SETUP_GUIDE.md) - Development environment setup
-- [**Program Structure**](docs/PROGRAM_STRUCTURE.md) - Code architecture
-- [**Database Design**](docs/DATABASE_DESIGN.md) - Data structure and relationships
-- [**API Documentation**](docs/API_INTEGRATIONS.md) - Internal services
 
 ## 🎯 Target Users
 
@@ -189,12 +176,6 @@ lib/
 - ✅ Simple utility cost handling
 - ✅ Basic receipt generation
 
-### Future Versions (v2.0+)
-- 📋 Payment integration (FPX, Touch 'n Go)
-- 📋 Advanced water provider calculations
-- 📋 Multi-language support (Bahasa Malaysia)
-- 📋 Cloud synchronization
-- 📋 Mobile app store releases
 
 ## 🤝 Contributing
 
