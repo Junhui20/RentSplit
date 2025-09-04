@@ -3,6 +3,7 @@ import '../models/malaysian_currency.dart';
 import '../models/calculation_result.dart';
 import '../database/database_helper.dart';
 import '../widgets/responsive_helper.dart';
+import '../theme/app_theme.dart';
 import 'property_form_screen.dart';
 import 'calculation_wizard_screen.dart';
 import 'reports_screen.dart';
@@ -159,43 +160,147 @@ class _PortfolioOverviewScreenState extends State<PortfolioOverviewScreen> {
   }
 
   Widget _buildWelcomeSection() {
-    return Card(
-      elevation: 4,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            colors: [
-              Theme.of(context).primaryColor,
-              Theme.of(context).primaryColor.withValues(alpha: 0.8),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+    final totalProperties = _portfolioSummary?['totalProperties'] ?? 0;
+    final totalUnits = _portfolioSummary?['totalUnits'] ?? 0;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      child: Card(
+        elevation: 12,
+        shadowColor: Theme.of(context).primaryColor.withValues(alpha: 0.4),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
         ),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(28.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: AppTheme.primaryGradient,
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
+                blurRadius: 25,
+                offset: const Offset(0, 12),
+                spreadRadius: 0,
+              ),
+              BoxShadow(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                blurRadius: 40,
+                offset: const Offset(0, 20),
+                spreadRadius: 5,
+              ),
+            ],
+          ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Welcome to RentSplit Malaysia',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.25),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                      BoxShadow(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.home_work,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'RentSplit Malaysia',
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black26,
+                              offset: Offset(0, 2),
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        totalProperties > 0
+                          ? 'Managing $totalProperties properties • $totalUnits units'
+                          : 'Your property management solution',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white.withValues(alpha: 0.95),
+                          letterSpacing: 0.3,
+                          shadows: const [
+                            Shadow(
+                              color: Colors.black12,
+                              offset: Offset(0, 1),
+                              blurRadius: 2,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Manage your rental properties across Malaysia',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white.withValues(alpha: 0.9),
+            if (totalProperties == 0) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.lightbulb_outline,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Start by adding your first property to begin managing your rental portfolio',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           ],
         ),
+      ),
       ),
     );
   }
@@ -221,25 +326,25 @@ class _PortfolioOverviewScreenState extends State<PortfolioOverviewScreen> {
               'Total Properties',
               '${_portfolioSummary!['totalProperties']}',
               Icons.home_work,
-              Colors.blue,
+              AppTheme.primaryBlue,
             ),
             _buildSummaryCard(
               'Total Units',
               '${_portfolioSummary!['totalUnits']}',
               Icons.apartment,
-              Colors.green,
+              AppTheme.secondaryTeal,
             ),
             _buildSummaryCard(
               'Occupancy Rate',
               '${_portfolioSummary!['occupancyRate'].toStringAsFixed(1)}%',
               Icons.people,
-              Colors.orange,
+              AppTheme.accentOrange,
             ),
             _buildSummaryCard(
               'Monthly Income',
               MalaysianCurrency.format(_portfolioSummary!['totalMonthlyRent']),
               Icons.attach_money,
-              Colors.purple,
+              AppTheme.accentAmber,
             ),
           ],
         ),
@@ -248,29 +353,107 @@ class _PortfolioOverviewScreenState extends State<PortfolioOverviewScreen> {
   }
 
   Widget _buildSummaryCard(String title, String value, IconData icon, Color color) {
-    return Card(
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 32, color: color),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: color,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      child: Card(
+        elevation: 8,
+        shadowColor: color.withValues(alpha: 0.3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              colors: [
+                Colors.white,
+                color.withValues(alpha: 0.03),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+                spreadRadius: 0,
               ),
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.8),
+                blurRadius: 10,
+                offset: const Offset(0, -2),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        color.withValues(alpha: 0.15),
+                        color.withValues(alpha: 0.08),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: color.withValues(alpha: 0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Icon(icon, size: 24, color: color),
+                ),
+                const SizedBox(height: 12),
+                Flexible(
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                      shadows: [
+                        Shadow(
+                          color: color.withValues(alpha: 0.3),
+                          offset: const Offset(0, 1),
+                          blurRadius: 2,
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Flexible(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.5,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
-              textAlign: TextAlign.center,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -289,32 +472,32 @@ class _PortfolioOverviewScreenState extends State<PortfolioOverviewScreen> {
           mobileColumns: 2,
           tabletColumns: 3,
           desktopColumns: 4,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: ResponsiveHelper.getResponsiveAspectRatio(context, mobile: 2.2, tablet: 2.5, desktop: 3.0),
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          childAspectRatio: ResponsiveHelper.getResponsiveAspectRatio(context, mobile: 1.4, tablet: 1.5, desktop: 1.6),
           children: [
             _buildActionCard(
               'Add Property',
               Icons.add_home,
-              Colors.blue,
+              AppTheme.primaryBlue,
               () => _navigateToAddProperty(),
             ),
             _buildActionCard(
               'Calculate Utilities',
               Icons.calculate,
-              Colors.green,
+              AppTheme.secondaryTeal,
               () => _navigateToCalculateUtilities(),
             ),
             _buildActionCard(
               'View Reports',
               Icons.analytics,
-              Colors.orange,
+              AppTheme.accentOrange,
               () => _navigateToReports(),
             ),
             _buildActionCard(
               'Manage Tenants',
               Icons.people_alt,
-              Colors.purple,
+              AppTheme.accentAmber,
               () => _navigateToTenants(),
             ),
           ],
@@ -324,30 +507,99 @@ class _PortfolioOverviewScreenState extends State<PortfolioOverviewScreen> {
   }
 
   Widget _buildActionCard(String title, IconData icon, Color color, VoidCallback onTap) {
-    return Card(
-      elevation: 2,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: color, size: 20),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: color,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      child: Card(
+        elevation: 6,
+        shadowColor: color.withValues(alpha: 0.25),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          splashColor: color.withValues(alpha: 0.1),
+          highlightColor: color.withValues(alpha: 0.05),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white,
+                  color.withValues(alpha: 0.02),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            ],
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.08),
+                  blurRadius: 15,
+                  offset: const Offset(0, 6),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  blurRadius: 8,
+                  offset: const Offset(0, -1),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          color.withValues(alpha: 0.15),
+                          color.withValues(alpha: 0.08),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withValues(alpha: 0.2),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Icon(icon, color: color, size: 22),
+                  ),
+                  const SizedBox(height: 8),
+                  Flexible(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: color,
+                        letterSpacing: 0.3,
+                        shadows: [
+                          Shadow(
+                            color: color.withValues(alpha: 0.2),
+                            offset: const Offset(0, 0.5),
+                            blurRadius: 1,
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -356,7 +608,7 @@ class _PortfolioOverviewScreenState extends State<PortfolioOverviewScreen> {
 
   Widget _buildStateDistribution() {
     final Map<String, int> unitsByState = Map<String, int>.from(_portfolioSummary!['unitsByState']);
-    
+
     if (unitsByState.isEmpty) {
       return Card(
         child: Padding(
@@ -412,7 +664,7 @@ class _PortfolioOverviewScreenState extends State<PortfolioOverviewScreen> {
 
   Widget _buildAttentionAlerts() {
     final List<Map<String, dynamic>> alerts = List<Map<String, dynamic>>.from(_portfolioSummary!['propertiesNeedingAttention']);
-    
+
     if (alerts.isEmpty) {
       return const Card(
         child: Padding(
@@ -454,7 +706,7 @@ class _PortfolioOverviewScreenState extends State<PortfolioOverviewScreen> {
 
   String _buildAlertSubtitle(Map<String, dynamic> alert) {
     final List<String> issues = [];
-    
+
     if (alert['expiringAgreements'] > 0) {
       issues.add('${alert['expiringAgreements']} expiring agreements');
     }
@@ -464,7 +716,7 @@ class _PortfolioOverviewScreenState extends State<PortfolioOverviewScreen> {
     if (alert['maintenanceUnits'] > 0) {
       issues.add('${alert['maintenanceUnits']} maintenance units');
     }
-    
+
     return issues.join(', ');
   }
 

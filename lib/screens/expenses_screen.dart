@@ -126,29 +126,93 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
     return Container(
       padding: const EdgeInsets.all(16.0),
-      child: Wrap(
-        spacing: 8.0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_selectedPropertyFilter != null)
-            FilterChip(
-              label: Text(_propertiesMap[_selectedPropertyFilter]?.name ?? 'Unknown Property'),
-              onSelected: (selected) {},
-              onDeleted: () {
-                setState(() {
-                  _selectedPropertyFilter = null;
-                });
-              },
-            ),
-          if (_selectedYearFilter != null)
-            FilterChip(
-              label: Text('Year: $_selectedYearFilter'),
-              onSelected: (selected) {},
-              onDeleted: () {
-                setState(() {
-                  _selectedYearFilter = null;
-                });
-              },
-            ),
+          Row(
+            children: [
+              Icon(Icons.filter_list, size: 20, color: Colors.grey[600]),
+              const SizedBox(width: 8),
+              Text(
+                'Active Filters:',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[700],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: [
+              if (_selectedPropertyFilter != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.home, size: 16, color: Colors.blue[700]),
+                      const SizedBox(width: 4),
+                      Text(
+                        _propertiesMap[_selectedPropertyFilter]?.name ?? 'Unknown Property',
+                        style: TextStyle(
+                          color: Colors.blue[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedPropertyFilter = null;
+                          });
+                        },
+                        child: Icon(Icons.close, size: 16, color: Colors.blue[700]),
+                      ),
+                    ],
+                  ),
+                ),
+              if (_selectedYearFilter != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.calendar_today, size: 16, color: Colors.green[700]),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Year: $_selectedYearFilter',
+                        style: TextStyle(
+                          color: Colors.green[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedYearFilter = null;
+                          });
+                        },
+                        child: Icon(Icons.close, size: 16, color: Colors.green[700]),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ],
       ),
     );
@@ -205,19 +269,80 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     final totalExpenses = expense.baseRent + expense.internetFee + expense.waterBill +
                          (expense.splitMiscellaneous ? expense.miscellaneousExpenses : 0.0);
 
-    return Card(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
       margin: const EdgeInsets.only(bottom: 16.0),
-      elevation: 3,
-      child: InkWell(
-        onTap: () => _navigateToEditExpense(expense),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
+      child: Card(
+        elevation: 8,
+        shadowColor: Colors.orange.withValues(alpha: 0.2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: InkWell(
+          onTap: () => _navigateToEditExpense(expense),
+          borderRadius: BorderRadius.circular(18),
+          splashColor: Colors.orange.withValues(alpha: 0.1),
+          highlightColor: Colors.orange.withValues(alpha: 0.05),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white,
+                  Colors.orange.withValues(alpha: 0.02),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.orange.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  blurRadius: 10,
+                  offset: const Offset(0, -2),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.orange.withValues(alpha: 0.15),
+                          Colors.orange.withValues(alpha: 0.08),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.orange.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.receipt_long,
+                      color: Colors.orange[700],
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,17 +350,45 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                         Text(
                           expense.periodDescription,
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          property?.name ?? 'Unknown Property',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                property?.name ?? 'Unknown Property',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                '${expense.totalKWhUsage.toStringAsFixed(0)} kWh',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -276,26 +429,74 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
               // Total and status
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+                  color: Colors.grey.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
                   children: [
-                    const Text(
-                      'Total Shared Expenses:',
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.attach_money, color: Colors.green[700], size: 20),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Total Shared Expenses:',
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          MalaysianCurrency.format(totalExpenses),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green[700],
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      MalaysianCurrency.format(totalExpenses),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                      ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildExpenseDetailItem(
+                            'Rent',
+                            MalaysianCurrency.format(expense.baseRent),
+                            Icons.home,
+                            Colors.blue,
+                          ),
+                        ),
+                        Container(
+                          width: 1,
+                          height: 30,
+                          color: Colors.grey.withValues(alpha: 0.3),
+                        ),
+                        Expanded(
+                          child: _buildExpenseDetailItem(
+                            'Internet',
+                            MalaysianCurrency.format(expense.internetFee),
+                            Icons.wifi,
+                            Colors.purple,
+                          ),
+                        ),
+                        Container(
+                          width: 1,
+                          height: 30,
+                          color: Colors.grey.withValues(alpha: 0.3),
+                        ),
+                        Expanded(
+                          child: _buildExpenseDetailItem(
+                            'Water',
+                            MalaysianCurrency.format(expense.waterBill),
+                            Icons.water_drop,
+                            Colors.cyan,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -337,6 +538,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           ),
         ),
       ),
+    ),
+    ),
     );
   }
 
@@ -463,6 +666,42 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildExpenseDetailItem(String label, String value, IconData icon, Color color) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: color),
+        const SizedBox(height: 3),
+        Flexible(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 9,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

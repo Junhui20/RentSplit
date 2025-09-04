@@ -17,17 +17,17 @@ class ReportsScreen extends StatefulWidget {
 
 class _ReportsScreenState extends State<ReportsScreen> {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
-  
+
   List<CalculationResult> _reports = [];
   List<Expense> _expenses = [];
   List<Property> _properties = [];
   List<Tenant> _tenants = [];
-  
+
   bool _isLoading = true;
   String _searchQuery = '';
   String? _selectedPropertyFilter;
   int? _selectedYearFilter;
-  
+
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -44,13 +44,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
-    
+
     try {
       final reports = await _databaseHelper.getCalculationResults();
       final expenses = await _databaseHelper.getExpenses();
       final properties = await _databaseHelper.getProperties();
       final tenants = await _databaseHelper.getTenants();
-      
+
       setState(() {
         _reports = reports;
         _expenses = expenses;
@@ -70,7 +70,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   List<CalculationResult> get _filteredReports {
     var filtered = _reports;
-    
+
     // Apply property filter
     if (_selectedPropertyFilter != null) {
       final propertyExpenseIds = _expenses
@@ -79,7 +79,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           .toSet();
       filtered = filtered.where((r) => propertyExpenseIds.contains(r.expenseId)).toList();
     }
-    
+
     // Apply year filter
     if (_selectedYearFilter != null) {
       final yearExpenseIds = _expenses
@@ -88,22 +88,22 @@ class _ReportsScreenState extends State<ReportsScreen> {
           .toSet();
       filtered = filtered.where((r) => yearExpenseIds.contains(r.expenseId)).toList();
     }
-    
+
     // Apply search filter
     if (_searchQuery.isNotEmpty) {
       filtered = filtered.where((report) {
         final expense = _expenses.firstWhere((e) => e.id == report.expenseId);
         final property = _properties.firstWhere((p) => p.id == expense.propertyId);
-        
+
         return property.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
                expense.periodDescription.toLowerCase().contains(_searchQuery.toLowerCase()) ||
                report.calculationMethod.displayName.toLowerCase().contains(_searchQuery.toLowerCase());
       }).toList();
     }
-    
+
     // Sort by creation date (newest first)
     filtered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    
+
     return filtered;
   }
 
@@ -115,11 +115,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _createNewReport,
-            tooltip: 'Create New Report',
-          ),
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: _shareAllReports,
@@ -175,9 +170,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
               setState(() => _searchQuery = value);
             },
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           // Filter Row
           Row(
             children: [
@@ -209,9 +204,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   },
                 ),
               ),
-              
+
               const SizedBox(width: 12),
-              
+
               // Year Filter
               Expanded(
                 child: DropdownButtonFormField<int>(
@@ -251,7 +246,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final filteredReports = _filteredReports;
     final totalAmount = filteredReports.fold<double>(0, (sum, report) => sum + report.totalAmount);
     final avgAmount = filteredReports.isNotEmpty ? totalAmount / filteredReports.length : 0.0;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -288,29 +283,105 @@ class _ReportsScreenState extends State<ReportsScreen> {
   }
 
   Widget _buildSummaryCard(String title, String value, IconData icon, Color color) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      child: Card(
+        elevation: 8,
+        shadowColor: color.withValues(alpha: 0.3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              colors: [
+                Colors.white,
+                color.withValues(alpha: 0.03),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+                spreadRadius: 0,
               ),
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.8),
+                blurRadius: 10,
+                offset: const Offset(0, -2),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        color.withValues(alpha: 0.15),
+                        color.withValues(alpha: 0.08),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: color.withValues(alpha: 0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Icon(icon, color: color, size: 24),
+                ),
+                const SizedBox(height: 12),
+                Flexible(
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                      shadows: [
+                        Shadow(
+                          color: color.withValues(alpha: 0.3),
+                          offset: const Offset(0, 1),
+                          blurRadius: 2,
+                        ),
+                      ],
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Flexible(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.5,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -356,19 +427,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
           Text(
             _searchQuery.isNotEmpty || _selectedPropertyFilter != null || _selectedYearFilter != null
                 ? 'Try adjusting your filters'
-                : 'Create your first calculation to see reports here',
+                : 'No reports available',
             style: TextStyle(
               color: Colors.grey[500],
-            ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: _createNewReport,
-            icon: const Icon(Icons.add),
-            label: const Text('Create New Report'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Colors.white,
             ),
           ),
         ],
@@ -380,11 +441,46 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final expense = _expenses.firstWhere((e) => e.id == report.expenseId);
     final property = _properties.firstWhere((p) => p.id == expense.propertyId);
 
-    return Card(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
       margin: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        onTap: () => _viewReport(report),
-        borderRadius: BorderRadius.circular(12),
+      child: Card(
+        elevation: 6,
+        shadowColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: InkWell(
+          onTap: () => _viewReport(report),
+          borderRadius: BorderRadius.circular(16),
+          splashColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white,
+                  Theme.of(context).primaryColor.withValues(alpha: 0.02),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.08),
+                  blurRadius: 15,
+                  offset: const Offset(0, 6),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  blurRadius: 8,
+                  offset: const Offset(0, -1),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -502,6 +598,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
           ),
         ),
       ),
+    ),
+    ),
     );
   }
 
@@ -547,12 +645,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
   }
 
   // CRUD Operations
-  void _createNewReport() {
-    Navigator.pushNamed(context, '/calculation-wizard').then((_) {
-      _loadData(); // Refresh data when returning
-    });
-  }
-
   void _viewReport(CalculationResult report) async {
     try {
       final expense = _expenses.firstWhere((e) => e.id == report.expenseId);

@@ -4,6 +4,7 @@ import '../models/rental_unit.dart';
 import '../models/utility_provider.dart';
 import '../models/malaysian_currency.dart';
 import '../database/database_helper.dart';
+import '../theme/app_theme.dart';
 import 'property_form_screen.dart';
 import 'property_details_screen.dart';
 import 'unit_form_screen.dart';
@@ -31,18 +32,18 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
 
   Future<void> _loadProperties() async {
     setState(() => _isLoading = true);
-    
+
     try {
       // Load properties from database
       final properties = await _databaseHelper.getProperties();
-      
+
       // Load units for each property
       final Map<String, List<RentalUnit>> unitsByProperty = {};
       for (final property in properties) {
         final units = await _databaseHelper.getRentalUnitsByProperty(property.id);
         unitsByProperty[property.id] = units;
       }
-      
+
       setState(() {
         _properties = properties;
         _unitsByProperty = unitsByProperty;
@@ -109,8 +110,8 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
-          hintText: 'Search properties...',
-          prefixIcon: const Icon(Icons.search),
+          hintText: 'Search properties by name, address, or state...',
+          prefixIcon: const Icon(Icons.search, color: Colors.grey),
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
                   icon: const Icon(Icons.clear),
@@ -121,8 +122,20 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                 )
               : null,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+          ),
+          filled: true,
+          fillColor: Colors.grey.withValues(alpha: 0.05),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
         onChanged: (query) {
           setState(() => _searchQuery = query);
@@ -206,19 +219,80 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
     final double totalMonthlyRent = units.fold(0.0, (sum, u) => sum + u.monthlyRent);
     final double occupancyRate = totalUnits > 0 ? (occupiedUnits / totalUnits) * 100 : 0.0;
 
-    return Card(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
       margin: const EdgeInsets.only(bottom: 16.0),
-      elevation: 3,
-      child: InkWell(
-        onTap: () => _navigateToPropertyDetails(property),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
+      child: Card(
+        elevation: 8,
+        shadowColor: AppTheme.primaryBlue.withValues(alpha: 0.2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: InkWell(
+          onTap: () => _navigateToPropertyDetails(property),
+          borderRadius: BorderRadius.circular(18),
+          splashColor: AppTheme.primaryBlue.withValues(alpha: 0.1),
+          highlightColor: AppTheme.primaryBlue.withValues(alpha: 0.05),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white,
+                  Colors.grey.withValues(alpha: 0.02),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  blurRadius: 10,
+                  offset: const Offset(0, -2),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppTheme.primaryBlue.withValues(alpha: 0.15),
+                          AppTheme.primaryBlue.withValues(alpha: 0.08),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.home_work,
+                      color: Theme.of(context).primaryColor,
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,17 +300,45 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                         Text(
                           property.name,
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${property.state.displayName} • ${property.propertyType.displayName}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                property.state.displayName,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                property.propertyType.displayName,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -309,38 +411,57 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 16),
-              
+
               // Property stats
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildStatItem(
-                      'Units',
-                      '$totalUnits',
-                      Icons.apartment,
-                      Colors.blue,
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildStatItem(
+                        'Units',
+                        '$totalUnits',
+                        Icons.apartment,
+                        Colors.blue,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: _buildStatItem(
-                      'Occupancy',
-                      '${occupancyRate.toStringAsFixed(0)}%',
-                      Icons.people,
-                      occupancyRate >= 80 ? Colors.green : 
-                      occupancyRate >= 50 ? Colors.orange : Colors.red,
+                    Container(
+                      width: 1,
+                      height: 40,
+                      color: Colors.grey.withValues(alpha: 0.3),
                     ),
-                  ),
-                  Expanded(
-                    child: _buildStatItem(
-                      'Monthly Rent',
-                      MalaysianCurrency.format(totalMonthlyRent),
-                      Icons.attach_money,
-                      Colors.purple,
+                    Expanded(
+                      child: _buildStatItem(
+                        'Occupancy',
+                        '${occupancyRate.toStringAsFixed(0)}%',
+                        Icons.people,
+                        occupancyRate >= 80 ? Colors.green :
+                        occupancyRate >= 50 ? Colors.orange : Colors.red,
+                      ),
                     ),
-                  ),
-                ],
+                    Container(
+                      width: 1,
+                      height: 40,
+                      color: Colors.grey.withValues(alpha: 0.3),
+                    ),
+                    Expanded(
+                      child: _buildStatItem(
+                        'Monthly Rent',
+                        totalMonthlyRent > 999
+                          ? 'RM${(totalMonthlyRent / 1000).toStringAsFixed(1)}k'
+                          : MalaysianCurrency.format(totalMonthlyRent),
+                        Icons.attach_money,
+                        Colors.purple,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              
+
               if (totalUnits > 0) ...[
                 const SizedBox(height: 12),
                 Row(
@@ -355,7 +476,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                   ],
                 ),
               ],
-              
+
               if (!property.isActive) ...[
                 const SizedBox(height: 12),
                 Container(
@@ -378,27 +499,49 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
           ),
         ),
       ),
+    ),
+    ),
     );
   }
 
   Widget _buildStatItem(String label, String value, IconData icon, Color color) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 20, color: color),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: color,
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 18, color: color),
+        ),
+        const SizedBox(height: 6),
+        Flexible(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
+        const SizedBox(height: 2),
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
@@ -479,7 +622,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
     try {
       final updatedProperty = property.copyWith(isActive: !property.isActive);
       await _databaseHelper.updateProperty(updatedProperty);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Property ${property.isActive ? 'deactivated' : 'activated'}')),
@@ -525,7 +668,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
   Future<void> _deleteProperty(Property property) async {
     try {
       await _databaseHelper.deleteProperty(property.id);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Property deleted')),

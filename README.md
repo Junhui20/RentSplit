@@ -1,6 +1,6 @@
 # RentSplit Malaysia 🏠💰
 
-A Flutter application for **fair electricity bill distribution** among Malaysian property owners and tenants, with **TNB 2024 compliance**.
+A Flutter application for **fair electricity bill distribution** among Malaysian property owners and tenants, with **TNB 2025 compliance**.
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.32.0-blue.svg)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-3.5.0-blue.svg)](https://dart.dev/)
@@ -9,7 +9,7 @@ A Flutter application for **fair electricity bill distribution** among Malaysian
 ## 🎯 What This App Solves
 
 **Problem**: Splitting electricity bills fairly among tenants in Malaysia is complex due to:
-- TNB's new 2024 billing structure with multiple charges and taxes
+- TNB's new 2025 billing structure with multiple charges and taxes
 - Individual air conditioning usage differences
 - Common area electricity sharing
 - Manual calculations prone to errors and disputes
@@ -18,7 +18,7 @@ A Flutter application for **fair electricity bill distribution** among Malaysian
 
 ## ⚡ Core Features
 
-### TNB 2024 Electricity Calculation
+### TNB 2025 Electricity Calculation
 - **Complete TNB Compliance**: Energy charge, capacity charge, network charge, retail charge
 - **Tax Calculations**: KWTBB (1.6%), SST (8%), Energy Efficiency Incentive
 - **Individual AC Tracking**: Separate meters for each tenant's air conditioning usage
@@ -38,9 +38,49 @@ A Flutter application for **fair electricity bill distribution** among Malaysian
 - **WhatsApp Sharing**: Easy sharing of bills and calculations
 - **Historical Tracking**: Complete calculation history and trends
 
-## 📱 Screenshots
+## 📱 App Screenshots
 
-*Screenshots will be added when UI is finalized*
+### 🏠 Portfolio & Property Management
+
+![Portfolio Overview](image/Portfolio_page.jpg)
+*Clean dashboard showing all your properties at a glance with modern light blue theme*
+
+![Properties List](image/Properties_page.jpg)
+*Easy property management with quick access to all your rental units*
+
+![View Properties](image/View_properties.jpg)
+*Detailed property view with comprehensive information and management options*
+
+### 👥 Tenant Management
+
+![Tenant List](image/Tanant_page.jpg)
+*Complete tenant overview with individual details and billing history*
+
+![Add New Tenant](image/Add_tanant.jpg)
+*Simple tenant registration form with all necessary information fields*
+
+### 🏢 Unit Management
+
+![Add New Unit](image/Add_unit.jpg)
+*Easy unit creation with customizable settings and tenant assignment*
+
+### 💰 Expense & Calculation Management
+
+![Add Properties](image/Add_properties1.jpg)
+*Step 1: Property registration with basic information and location details*
+
+![Add Properties Continued](image/Add_properties2.jpg)
+*Step 2: Advanced property settings and utility configuration*
+
+![Calculate Expenses](image/Calculate_expenses.jpg)
+*TNB 2025 calculation wizard with step-by-step guidance for accurate bill splitting*
+
+### 📊 Reports & Analytics
+
+![Reports Page](image/Peports_page.jpg)
+*Comprehensive reporting dashboard with detailed analytics and historical data*
+
+---
 
 ## 🚀 Quick Start
 
@@ -119,7 +159,8 @@ Plus water (RM 15.20 each) + internet (RM 29.67 each)
 - **Language**: Dart 3.5.0
 - **Database**: SQLite with comprehensive schema
 - **State Management**: Provider pattern
-- **UI**: Material Design 3 with Malaysian theme
+- **UI**: Material Design 3 with modern light blue theme
+- **Design**: Professional Malaysian property management interface
 
 ### Project Structure
 ```
@@ -137,7 +178,7 @@ lib/
 
 ### For Users
 - [**Core Features**](docs/CORE_FEATURES.md) - Main functionality overview
-- [**TNB Electricity Guide**](docs/TNB_ELECTRICITY_GUIDE.md) - Understanding TNB 2024 system
+- [**TNB Electricity Guide**](docs/TNB_ELECTRICITY_GUIDE.md) - Understanding TNB 2025 system
 - [**Calculation Methods**](docs/CALCULATION_METHODS.md) - Simple vs Layered approaches
 - [**User Cases**](docs/USER_CASES.md) - Real-world scenarios
 
@@ -167,7 +208,7 @@ lib/
 ## 🌟 Why Choose RentSplit Malaysia?
 
 ### Malaysian-Specific
-- **TNB 2024 Compliance**: Only app with complete new billing structure
+- **TNB 2025 Compliance**: Only app with complete new billing structure
 - **Local Providers**: Support for TNB, SESB (Sabah), SEB (Sarawak)
 - **Malaysian Currency**: All calculations in Ringgit Malaysia (RM)
 
@@ -178,16 +219,19 @@ lib/
 
 ### Easy to Use
 - **5-Minute Process**: Complete monthly calculations quickly
+- **Modern UI Design**: Clean, light blue interface with Material Design 3
 - **Mobile-First**: Designed for smartphones and tablets
 - **Cross-Platform**: Works on Android, iOS, Web, and Desktop
 
 ## 🔮 Roadmap
 
 ### Current Version (v1.0.0)
-- ✅ TNB electricity calculation engine
+- ✅ TNB 2025 electricity calculation engine
 - ✅ Individual AC meter tracking
 - ✅ Simple utility cost handling
-- ✅ Basic receipt generation
+- ✅ Modern light blue UI design
+- ✅ Professional receipt generation
+- ✅ Cross-platform compatibility
 
 ### Future Versions (v2.0+)
 - 📋 Payment integration (FPX, Touch 'n Go)

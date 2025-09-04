@@ -140,106 +140,152 @@ class _CalculationResultsScreenState extends State<CalculationResultsScreen> {
   }
 
   Widget _buildSummaryCard() {
-    return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      child: Card(
+        elevation: 12,
+        shadowColor: Colors.blue.withValues(alpha: 0.3),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              colors: [
+                Colors.white,
+                Colors.blue.withValues(alpha: 0.02),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withValues(alpha: 0.1),
+                blurRadius: 25,
+                offset: const Offset(0, 12),
+                spreadRadius: 0,
+              ),
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.9),
+                blurRadius: 15,
+                offset: const Offset(0, -3),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.calculate, color: Colors.blue[700]),
-                const SizedBox(width: 8),
-                const Text(
-                  'Calculation Summary',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.blue.withValues(alpha: 0.15),
+                            Colors.blue.withValues(alpha: 0.08),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.blue.withValues(alpha: 0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Icon(Icons.calculate, color: Colors.blue[700], size: 26),
+                    ),
+                    const SizedBox(width: 16),
+                    const Expanded(
+                      child: Text(
+                        'Calculation Summary',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black12,
+                              offset: Offset(0, 1),
+                              blurRadius: 2,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      _buildSummaryRow('Period', widget.expense.periodDescription, Icons.calendar_today),
+                      const SizedBox(height: 12),
+                      _buildSummaryRow('Method', widget.calculationResult.calculationMethod.displayName, Icons.settings),
+                      const SizedBox(height: 12),
+                      _buildSummaryRow('Active Tenants', '${widget.calculationResult.activeTenantsCount}', Icons.people),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.attach_money, color: Colors.green[700], size: 20),
+                                const SizedBox(width: 8),
+                                const Text(
+                                  'Total Amount:',
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              MalaysianCurrency.format(widget.calculationResult.totalAmount),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green[700],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildSummaryRow('Electricity Provider', _property?.electricityProvider?.shortName ?? 'Unknown', Icons.flash_on),
+                      const SizedBox(height: 12),
+                      _buildSummaryRow('Total Electric Usage', '${widget.expense.totalKWhUsage.toStringAsFixed(1)} kWh', Icons.electric_meter),
+                      const SizedBox(height: 8),
+                      _buildSummaryRow('Total Electric Cost', MalaysianCurrency.format(_calculateTotalElectricCost()), Icons.flash_on),
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Period:', style: TextStyle(fontWeight: FontWeight.w500)),
-                      Text(widget.expense.periodDescription),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Method:', style: TextStyle(fontWeight: FontWeight.w500)),
-                      Text(widget.calculationResult.calculationMethod.displayName),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Active Tenants:', style: TextStyle(fontWeight: FontWeight.w500)),
-                      Text('${widget.calculationResult.activeTenantsCount}'),
-                    ],
-                  ),
-                  const Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Total Amount:',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        MalaysianCurrency.format(widget.calculationResult.totalAmount),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Electricity Provider:', style: TextStyle(fontWeight: FontWeight.w500)),
-                      Text(_property?.electricityProvider?.shortName ?? 'Unknown'),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Total Electric Usage:', style: TextStyle(fontWeight: FontWeight.w500)),
-                      Text('${widget.expense.totalKWhUsage.toStringAsFixed(1)} kWh'),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Total Electric Cost:', style: TextStyle(fontWeight: FontWeight.w500)),
-                      Text(
-                        MalaysianCurrency.format(_calculateTotalElectricCost()),
-                        style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -350,8 +396,8 @@ class _CalculationResultsScreenState extends State<CalculationResultsScreen> {
                 CircleAvatar(
                   backgroundColor: Colors.blue,
                   child: Text(
-                    tenantCalc.tenantName.isNotEmpty 
-                        ? tenantCalc.tenantName[0].toUpperCase() 
+                    tenantCalc.tenantName.isNotEmpty
+                        ? tenantCalc.tenantName[0].toUpperCase()
                         : 'T',
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
@@ -410,9 +456,9 @@ class _CalculationResultsScreenState extends State<CalculationResultsScreen> {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Cost Breakdown
             Container(
               padding: const EdgeInsets.all(12),
@@ -1651,6 +1697,24 @@ class _CalculationResultsScreenState extends State<CalculationResultsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSummaryRow(String label, String value, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: Colors.grey[600]),
+        const SizedBox(width: 8),
+        Text(
+          '$label:',
+          style: const TextStyle(fontWeight: FontWeight.w500),
+        ),
+        const Spacer(),
+        Text(
+          value,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ],
     );
   }
 

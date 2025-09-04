@@ -116,8 +116,8 @@ class _TenantListScreenState extends State<TenantListScreen> {
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
-          hintText: 'Search tenants...',
-          prefixIcon: const Icon(Icons.search),
+          hintText: 'Search tenants by name, email, or phone...',
+          prefixIcon: const Icon(Icons.search, color: Colors.grey),
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
                   icon: const Icon(Icons.clear),
@@ -128,8 +128,20 @@ class _TenantListScreenState extends State<TenantListScreen> {
                 )
               : null,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+          ),
+          filled: true,
+          fillColor: Colors.grey.withValues(alpha: 0.05),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
         onChanged: (query) {
           setState(() => _searchQuery = query);
@@ -210,27 +222,85 @@ class _TenantListScreenState extends State<TenantListScreen> {
     final property = tenant.propertyId != null ? _propertiesMap[tenant.propertyId] : null;
     final unit = tenant.rentalUnitId != null ? _unitsMap[tenant.rentalUnitId] : null;
 
-    return Card(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
       margin: const EdgeInsets.only(bottom: 16.0),
-      elevation: 3,
-      child: InkWell(
-        onTap: () => _navigateToEditTenant(tenant),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
+      child: Card(
+        elevation: 8,
+        shadowColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: InkWell(
+          onTap: () => _navigateToEditTenant(tenant),
+          borderRadius: BorderRadius.circular(18),
+          splashColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white,
+                  Colors.grey.withValues(alpha: 0.02),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  blurRadius: 10,
+                  offset: const Offset(0, -2),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: tenant.isActive ? Colors.green : Colors.grey,
-                    child: Text(
-                      tenant.name.isNotEmpty ? tenant.name[0].toUpperCase() : 'T',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: tenant.isActive
+                          ? [Colors.green, Colors.green.withValues(alpha: 0.8)]
+                          : [Colors.grey, Colors.grey.withValues(alpha: 0.8)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: (tenant.isActive ? Colors.green : Colors.grey).withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 24,
+                      child: Text(
+                        tenant.name.isNotEmpty ? tenant.name[0].toUpperCase() : 'T',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,25 +408,37 @@ class _TenantListScreenState extends State<TenantListScreen> {
               const SizedBox(height: 12),
 
               // AC Usage Information
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildStatItem(
-                      'Current AC Reading',
-                      '${tenant.currentACReading.toStringAsFixed(1)} kWh',
-                      Icons.electric_meter,
-                      Colors.blue,
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildStatItem(
+                        'Current Reading',
+                        '${tenant.currentACReading.toStringAsFixed(1)} kWh',
+                        Icons.electric_meter,
+                        Colors.blue,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: _buildStatItem(
-                      'Monthly Usage',
-                      '${tenant.acUsageKWh.toStringAsFixed(1)} kWh',
-                      Icons.trending_up,
-                      tenant.acUsageKWh > 0 ? Colors.green : Colors.grey,
+                    Container(
+                      width: 1,
+                      height: 40,
+                      color: Colors.grey.withValues(alpha: 0.3),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: _buildStatItem(
+                        'Monthly Usage',
+                        '${tenant.acUsageKWh.toStringAsFixed(1)} kWh',
+                        Icons.trending_up,
+                        tenant.acUsageKWh > 0 ? Colors.green : Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 8),
@@ -379,29 +461,50 @@ class _TenantListScreenState extends State<TenantListScreen> {
           ),
         ),
       ),
+    ),
+    ),
     );
   }
 
   Widget _buildStatItem(String label, String value, IconData icon, Color color) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 20, color: color),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: color,
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 18, color: color),
+        ),
+        const SizedBox(height: 6),
+        Flexible(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
+        const SizedBox(height: 2),
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          textAlign: TextAlign.center,
         ),
       ],
     );
