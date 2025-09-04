@@ -174,20 +174,6 @@ lib/
 └── providers/                # State management
 ```
 
-## 📚 Documentation
-
-### For Users
-- [**Core Features**](docs/CORE_FEATURES.md) - Main functionality overview
-- [**TNB Electricity Guide**](docs/TNB_ELECTRICITY_GUIDE.md) - Understanding TNB 2025 system
-- [**Calculation Methods**](docs/CALCULATION_METHODS.md) - Simple vs Layered approaches
-- [**User Cases**](docs/USER_CASES.md) - Real-world scenarios
-
-### For Developers
-- [**Setup Guide**](docs/SETUP_GUIDE.md) - Development environment setup
-- [**Program Structure**](docs/PROGRAM_STRUCTURE.md) - Code architecture
-- [**Database Design**](docs/DATABASE_DESIGN.md) - Data structure and relationships
-- [**API Documentation**](docs/API_INTEGRATIONS.md) - Internal services
-
 ## 🎯 Target Users
 
 ### Property Owners/Landlords
@@ -233,12 +219,6 @@ lib/
 - ✅ Professional receipt generation
 - ✅ Cross-platform compatibility
 
-### Future Versions (v2.0+)
-- 📋 Payment integration (FPX, Touch 'n Go)
-- 📋 Advanced water provider calculations
-- 📋 Multi-language support (Bahasa Malaysia)
-- 📋 Cloud synchronization
-- 📋 Mobile app store releases
 
 ## 🤝 Contributing
 
@@ -254,21 +234,3 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-- **Documentation**: Check the [docs/](docs/) folder for comprehensive guides
-- **Issues**: Report bugs or request features via GitHub Issues
-- **Discussions**: Join community discussions in GitHub Discussions
-
-## 🙏 Acknowledgments
-
-- **TNB Malaysia**: For providing detailed billing structure information
-- **Flutter Team**: For the excellent cross-platform framework
-- **Malaysian Developer Community**: For feedback and testing
-
----
-
-**Made with ❤️ for the Malaysian rental community**
-
-*Simplifying utility bill splitting, one calculation at a time.*
